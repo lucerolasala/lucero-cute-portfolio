@@ -1,0 +1,50 @@
+.pantalla {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 0;
+}
+
+/* La portada ocupa toda la pantalla, sin padding */
+.pantalla--portada { padding: 0; }
+
+@keyframes fundido {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Transición vertical entre pantallas ---------- */
+/* Durante el cambio, las dos pantallas se apilan a pantalla completa */
+.viewport--moviendo {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 20;
+}
+.viewport--moviendo .slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Bajar: la actual sale hacia arriba y la nueva entra desde abajo */
+.slide--baja-sale  { animation: sale-arriba 0.8s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.slide--baja-entra { animation: entra-abajo 0.8s cubic-bezier(0.65, 0, 0.35, 1) both; }
+
+/* Subir: la actual sale hacia abajo y la nueva entra desde arriba */
+.slide--sube-sale  { animation: sale-abajo 0.8s cubic-bezier(0.65, 0, 0.35, 1) both; }
+.slide--sube-entra { animation: entra-arriba 0.8s cubic-bezier(0.65, 0, 0.35, 1) both; }
+
+@keyframes sale-arriba  { to   { transform: translateY(-100%); } }
+@keyframes sale-abajo   { to   { transform: translateY(100%); } }
+@keyframes entra-abajo  { from { transform: translateY(100%); } }
+@keyframes entra-arriba { from { transform: translateY(-100%); } }
+
+/* Durante la transición, el fondo mide exactamente la ventana,
+   así los bordes de las pantallas coinciden con filas completas de lunares */
+.viewport--moviendo .fondo {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}

@@ -1,0 +1,49 @@
+.papel {
+  --poste: 4px;      /* grosor de la barrita */
+  --bolita: 5px;     /* radio de la bolita de la punta */
+
+  position: relative;
+  display: inline-block;
+  background: #f5f3ef;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  transform: rotate(-1deg);
+}
+.papel--bloque { display: block; }
+
+/* Barritas laterales */
+.papel::before,
+.papel::after {
+  content: '';
+  position: absolute;
+  width: calc(var(--bolita) * 2 + 4px);
+}
+
+/* Izquierda: bolita arriba, la línea baja hasta el final del papel */
+.papel::before {
+  left: calc(var(--bolita) * -1 - 2px);
+  top: calc(var(--bolita) * -1);
+  bottom: 0;
+  background:
+    radial-gradient(circle at 50% var(--bolita), var(--gris) var(--bolita), transparent calc(var(--bolita) + 0.5px)),
+    linear-gradient(var(--gris), var(--gris)) 50% var(--bolita) / var(--poste) calc(100% - var(--bolita)) no-repeat;
+}
+
+/* Derecha: la línea sube desde abajo, bolita en el extremo inferior */
+.papel::after {
+  right: calc(var(--bolita) * -1 - 2px);
+  top: 0;
+  bottom: calc(var(--bolita) * -1);
+  background:
+    radial-gradient(circle at 50% calc(100% - var(--bolita)), var(--gris) var(--bolita), transparent calc(var(--bolita) + 0.5px)),
+    linear-gradient(var(--gris), var(--gris)) 50% 0 / var(--poste) calc(100% - var(--bolita)) no-repeat;
+}
+
+.etiqueta {
+  display: inline-block;
+  background: var(--gris);
+  color: var(--blanco);
+  font-family: var(--f-titulo);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  transform: rotate(-1deg);
+}

@@ -1,0 +1,21 @@
+.pr { width: min(1000px, 94vw); }
+
+.pr-titulo { text-align: center; margin-bottom: 18px; }
+.pr-titulo h1 {
+  font-family: var(--f-titulo);
+  font-weight: 400;
+  font-size: 46px;
+  color: var(--gris);
+  padding: 4px 44px 8px;
+}
+.pr-tag { font-size: 22px; padding: 1px 34px; margin-top: 4px; }
+
+.pr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 26px;
+}
+
+@media (max-width: 600px) {
+  .pr-titulo h1 { font-size: 34px; padding: 4px 26px 6px; }
+}

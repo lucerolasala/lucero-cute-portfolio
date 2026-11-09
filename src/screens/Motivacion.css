@@ -1,0 +1,213 @@
+.mot { width: min(1120px, 96vw); }
+
+/* La escena mide justo lo que el sobre: así queda centrado */
+.mot-escena {
+  position: relative;
+  transition: translate 0.7s ease;
+}
+/* Al abrir, baja un poco todo para que la hoja entre en pantalla */
+.mot--abierto .mot-escena { translate: 0 6vh; }
+
+/* ---------- Estrellas: ocupan todo el alrededor del sobre ---------- */
+.mot-estrellas {
+  position: absolute;
+  inset: -48% 0 -14% 0;
+  pointer-events: none;
+}
+.mot .mot-estrella {
+  position: absolute;
+  z-index: 8;
+  scale: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+.mot--abierto .mot-estrella {
+  scale: 1;
+  pointer-events: auto;
+  animation: pop-estrella 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d, 0.9s) backwards;
+}
+.mot--abierto .mot-estrella:hover { scale: 1.3; }
+
+/* ---------- Sobre ---------- */
+.sobre {
+  position: relative;
+  width: min(86%, 78vh);       /* grande, pero sin pasarse del alto de la ventana */
+  margin: 0 auto;
+  aspect-ratio: 1.45 / 1;
+  perspective: 1600px;
+  container-type: inline-size;
+}
+.sobre > * { position: absolute; }
+
+.sobre-fondo {
+  inset: 0;
+  background: #564e48;
+  border-radius: 12px;
+  box-shadow: 0 14px 30px rgba(40, 30, 35, 0.35);
+  z-index: 0;
+}
+
+/* Frente del sobre: forma de "V" */
+.sobre-frente {
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(160deg, #70665f, #62594f);
+  clip-path: url(#clip-frente);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* Solapa que gira en 3D */
+.sobre-solapa {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 52%;
+  z-index: 4;
+  background: linear-gradient(#6f655e, #5a524b);
+  clip-path: url(#clip-solapa);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  /* Al cerrar: espera a que la hoja termine de bajar (0.7s) y recién ahí gira */
+  transition: transform 0.7s ease 0.7s, z-index 0s 0.7s;
+  pointer-events: none;
+}
+
+/* ---------- Hoja: grande, con borde, siempre adentro del sobre ---------- */
+.sobre-carta {
+  left: 4%;
+  right: 4%;
+  top: 8%;
+  bottom: 5%;              /* termina adentro: no se ve por debajo */
+  z-index: 2;
+  background: #fadce6;
+  border-radius: 6px;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, 0.25),
+    inset 0 0 0 7px #fadce6,
+    inset 0 0 0 9px rgba(255, 255, 255, 0.95);
+  translate: 0 0;
+  rotate: 0deg;
+  transition: translate 0.6s ease, rotate 0.6s ease;
+  pointer-events: none;
+}
+
+/* Título + subtítulo adentro de la hoja, arriba */
+.mot-cabecera {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  translate: -50% 0;
+  width: 70%;
+  text-align: center;
+  z-index: 2;
+}
+.mot-papel h1 {
+  font-family: var(--f-portada);
+  font-weight: 400;
+  font-size: max(26px, 6.4cqw);
+  line-height: 1.1;
+  color: var(--gris);
+  padding: 0.2em 0.5em 0.35em;
+  white-space: nowrap;
+}
+.mot-oculto { visibility: hidden; }
+
+.mot-cabecera .mot-subtitulo {
+  display: block;
+  width: 62%;
+  margin: -0.5em auto 0;
+  font-size: max(14px, 3.3cqw);
+  padding: 2px 8px;
+  rotate: 0deg;
+  transform: none;
+  position: relative;
+  z-index: 3;
+}
+
+.mot-texto {
+  position: absolute;
+  top: 27%;
+  left: 9%;
+  right: 9%;
+  font-size: max(13px, 2.6cqw);
+  line-height: 1.5;
+  text-align: center;
+  color: var(--gris);
+}
+
+/* ---------- Sello (corazón) ---------- */
+.sello {
+  z-index: 6;
+  width: 16%;
+  left: 50%;
+  top: 52%;
+  translate: -50% -50%;
+  rotate: -8deg;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
+  transition: left 0.8s cubic-bezier(0.34, 1.3, 0.64, 1) 0.9s,
+              top 0.8s cubic-bezier(0.34, 1.3, 0.64, 1) 0.9s,
+              width 0.8s ease 0.9s,
+              rotate 0.8s ease 0.9s;
+  pointer-events: none;
+}
+
+/* ---------- Botón invisible que cubre el sobre ---------- */
+.sobre-boton {
+  inset: 0;
+  z-index: 7;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ---------- Estado abierto ---------- */
+.mot--abierto .sobre-solapa {
+  transform: rotateX(180deg);
+  z-index: 1;
+  transition: transform 0.7s ease, z-index 0s 0.3s;
+}
+
+.mot--abierto .sobre-carta {
+  translate: 0 -52%;     /* cuánto sale la hoja hacia arriba */
+  rotate: -3deg;
+  transition: translate 0.95s cubic-bezier(0.34, 1.35, 0.64, 1) 0.45s,
+              rotate 0.95s cubic-bezier(0.34, 1.35, 0.64, 1) 0.45s;
+}
+
+.mot--abierto .sello {
+  left: 89%;
+  top: 76%;
+  width: 14%;
+  rotate: 14deg;
+  transition: left 0.8s cubic-bezier(0.34, 1.3, 0.64, 1) 0.3s,
+              top 0.8s cubic-bezier(0.34, 1.3, 0.64, 1) 0.3s,
+              width 0.8s ease 0.3s,
+              rotate 0.8s ease 0.3s;
+}
+
+/* ---------- Pista "Tocá el sobre": flota debajo, sin mover el sobre ---------- */
+.mot-pista {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 16px);
+  text-align: center;
+  animation: mot-rebote 1.6s ease-in-out infinite;
+  transition: opacity 0.4s ease;
+}
+.mot-pista--oculta { opacity: 0; pointer-events: none; }
+
+@keyframes mot-rebote {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -6px; }
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 700px) {
+  .sobre { width: min(94%, 62vh); aspect-ratio: 1.2 / 1; }
+  .mot-cabecera { width: 84%; }
+  .mot-texto { font-size: 13px; top: 30%; }
+}

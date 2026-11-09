@@ -43,3 +43,7 @@
   pointer-events: none;
   z-index: 2;
 }
+
+.polaroid-foto img {
+  object-position: center 30%;   /* probá 20%, 40%, 50%... */
+}

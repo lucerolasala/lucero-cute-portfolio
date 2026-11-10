@@ -1,5 +1,5 @@
 import clip from '../assets/decor/clip.png'
-import foto from '../assets/foto.jpg'
+import foto from '../assets/foto.jpeg'
 import './Polaroid.css'
 
 export default function Polaroid() {

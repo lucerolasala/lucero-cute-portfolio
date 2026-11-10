@@ -19,6 +19,16 @@ export default function SobreMi() {
   return (
     <section className="sm">
       <div className="sm-hoja">
+        <div className="sm-deco" aria-hidden="true">
+          <Estrella className="sm-d d1" color="#7fdede" borde />
+          <Estrella className="sm-d d2" />
+          <Estrella className="sm-d d3" />
+          <Estrella className="sm-d d4" color="#7fdede" borde />
+          <Estrella className="sm-d d5" />
+          <Estrella className="sm-d d6" />
+          <Estrella className="sm-d d7" color="#7fdede" borde />
+          <Estrella className="sm-d d8" />
+        </div>
         <div className="sm-foto">
           <Polaroid />
         </div>

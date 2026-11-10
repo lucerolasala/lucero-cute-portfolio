@@ -1,6 +1,6 @@
 import Polaroid from '../components/Polaroid'
 import { Papel, Etiqueta } from '../components/Papel'
-import { MailIcon, GithubIcon, LinkedinIcon, PinIcon } from '../components/Icons'
+import { MailIcon, GithubIcon, LinkedinIcon, PinIcon, DownloadIcon } from '../components/Icons'
 import { profile } from '../data/profile'
 import { skills } from '../data/skills'
 import Estrella from '../components/Estrella'
@@ -31,7 +31,7 @@ export default function SobreMi() {
              <Estrella className="sm-e4" />
 
              <Papel bloque>
-                <h1><PopText text="About Me" delay={0.2} /></h1>
+                <h1><PopText text="About Me" delay={0.2} loop /></h1>
             </Papel>
              <Etiqueta className="sm-nombre">{profile.name}</Etiqueta>
             </div>
@@ -39,7 +39,7 @@ export default function SobreMi() {
 
         <div className="sm-cajas">
           <article className="caja" style={{ '--i': 0 }}>
-            <h2>Sobre mí</h2>
+            <h2>Mi recorrido académico</h2>
             <p className="caja-intro">{profile.intro}</p>
             <dl className="caja-datos">
               {filas.map(([k, v]) => (
@@ -67,6 +67,9 @@ export default function SobreMi() {
           <a href={c.github} target="_blank" rel="noreferrer"><GithubIcon /> {c.githubLabel}</a>
           <a href={c.linkedin} target="_blank" rel="noreferrer"><LinkedinIcon /> {c.linkedinLabel}</a>
           <span><PinIcon /> {profile.location}</span>
+          <a className="sm-cv" href="/cv-lucero.pdf" download="CV-Lucero-Lasala.pdf">
+            <DownloadIcon /> Descargar CV
+          </a>
         </aside>
       </div>
     </section>

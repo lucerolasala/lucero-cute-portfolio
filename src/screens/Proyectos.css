@@ -1,14 +1,74 @@
-.pr { width: min(1000px, 94vw); }
-
 .pr-titulo { text-align: center; margin-bottom: 18px; }
+
+/* Contenedor que se ajusta al cartel: las estrellas se miden contra él */
+.pr-titulo-inner {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+}
+
 .pr-titulo h1 {
-  font-family: var(--f-titulo);
+  font-family: var(--f-titulo-principal);   /* misma fuente que "About Me" */
   font-weight: 400;
   font-size: 46px;
   color: var(--gris);
   padding: 4px 44px 8px;
 }
-.pr-tag { font-size: 22px; padding: 1px 34px; margin-top: 4px; }
+
+/* El cartel cae, se balancea y queda colgado */
+.pr-titulo .papel {
+  display: block;
+  transform-origin: 50% 0;
+  animation: pr-cae 0.9s cubic-bezier(0.34, 1.2, 0.64, 1) 0.8s backwards;
+}
+
+@keyframes pr-cae {
+  from { opacity: 0; translate: 0 -90px; rotate: 9deg; }
+  55%  { opacity: 1; translate: 0 8px;   rotate: -4deg; }
+  80%  { translate: 0 -2px; rotate: 1.5deg; }
+  to   { opacity: 1; translate: 0 0;     rotate: 0deg; }
+}
+
+/* "Lucero": debajo del cartel, montado sobre su borde inferior */
+.pr-titulo .pr-tag {
+  position: relative;
+  z-index: 3;
+  display: block;
+  width: 62%;
+  margin: 1px auto 0;
+  text-align: center;
+  font-size: 22px;
+  padding: 1px 10px;
+  rotate: 0deg;
+  transform: none;
+  animation:
+    pr-nombre 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1.4s backwards,
+    rebote 1.6s ease-in-out 2.2s infinite;
+}
+
+@keyframes pr-nombre {
+  from { opacity: 0; translate: 0 -20px; scale: 0.6; }
+  to   { opacity: 1; translate: 0 0;     scale: 1; }
+}
+
+/* Estrellas: pop y balanceo */
+.pr-titulo .estrella {
+  position: absolute;
+  z-index: 5;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.22));
+  transform-origin: center;
+  animation:
+    pop-estrella 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d, 1.6s) backwards,
+    balanceo var(--t, 5s) ease-in-out calc(var(--d, 1.6s) + 0.6s) infinite;
+}
+.pr-e1 { left: -16%;  top: -30%; width: 11%; rotate: 13deg;  --d: 1.6s;  --t: 5s; }
+.pr-e2 { right: -13%; top: 6%;   width: 9%;  rotate: 11deg;  --d: 1.75s; --t: 6s; }
+.pr-e3 { left: -14%; top: 52%;  width: 7%;  rotate: -12deg; --d: 1.9s;  --t: 4.5s; }
+
+@media (max-width: 600px) {
+  .pr-titulo h1 { font-size: 34px; padding: 4px 26px 6px; }
+  .pr-e3 { display: none; }
+}
 
 .pr-grid {
   display: grid;

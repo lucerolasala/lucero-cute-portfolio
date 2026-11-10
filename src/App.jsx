@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import Background from './components/Background'
+import Nav from './components/Nav'
 import Portada from './screens/Portada'
 import SobreMi from './screens/SobreMi'
 import Motivacion from './screens/Motivacion'
 import Proyectos from './screens/Proyectos'
 import './App.css'
 
-const TOTAL = 4        // Portada, Sobre mí, Motivación, Proyectos
+const etiquetas = ['Portada', 'Sobre mí', 'Motivación', 'Mis proyectos']
+const TOTAL = etiquetas.length
 const DURACION = 800   // ms de la transición (igual que en App.css)
 const TAM_LUNAR = 90   // separación aproximada entre lunares, en px
 
@@ -33,6 +35,7 @@ export default function App() {
   const [saliente, setSaliente] = useState(null) // { idx, dir, offset }
   const actual = useRef(0)
   const bloqueado = useRef(false)
+  const irARef = useRef(() => {})
 
   // Tamaño de lunar que hace entrar filas completas en el alto de la ventana
   useEffect(() => {
@@ -49,13 +52,15 @@ export default function App() {
     return () => window.removeEventListener('resize', ajustar)
   }, [])
 
-  // Navegación: rueda, flechas y deslizar en el celular
+  // Navegación: rueda, flechas, deslizar en el celular y puntitos
   useEffect(() => {
-    const cambiar = (dir) => {
+    // Salta a cualquier pantalla (la transición va hacia arriba o abajo según el destino)
+    const irA = (idx) => {
       if (bloqueado.current) return
-      const siguiente = Math.max(0, Math.min(TOTAL - 1, actual.current + dir))
+      const siguiente = Math.max(0, Math.min(TOTAL - 1, idx))
       if (siguiente === actual.current) return
 
+      const dir = siguiente > actual.current ? 1 : -1
       bloqueado.current = true
       setSaliente({ idx: actual.current, dir, offset: window.scrollY })
       actual.current = siguiente
@@ -67,6 +72,9 @@ export default function App() {
         bloqueado.current = false
       }, DURACION + 60)
     }
+    irARef.current = irA
+
+    const cambiar = (dir) => irA(actual.current + dir)
 
     // ¿La pantalla ya no tiene más para scrollear en esa dirección?
     const enBorde = (dir) => {
@@ -119,16 +127,21 @@ export default function App() {
   const modo = saliente ? (saliente.dir > 0 ? 'baja' : 'sube') : ''
 
   return (
-    <div className={`viewport ${saliente ? 'viewport--moviendo' : ''}`}>
-      {saliente && (
-        <div key={`p${saliente.idx}`} className={`slide slide--${modo}-sale`}>
-          <Pantalla idx={saliente.idx} offset={saliente.offset} />
-        </div>
-      )}
+    <>
+      <div className={`viewport ${saliente ? 'viewport--moviendo' : ''}`}>
+        {saliente && (
+          <div key={`p${saliente.idx}`} className={`slide slide--${modo}-sale`}>
+            <Pantalla idx={saliente.idx} offset={saliente.offset} />
+          </div>
+        )}
 
-      <div key={`p${i}`} className={`slide ${saliente ? `slide--${modo}-entra` : ''}`}>
-        <Pantalla idx={i} />
+        <div key={`p${i}`} className={`slide ${saliente ? `slide--${modo}-entra` : ''}`}>
+          <Pantalla idx={i} />
+        </div>
       </div>
-    </div>
+
+      {/* Fuera del viewport, así no se mueve con la transición */}
+      <Nav actual={i} etiquetas={etiquetas} onGo={(n) => irARef.current(n)} />
+    </>
   )
 }

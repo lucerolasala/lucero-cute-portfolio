@@ -7,8 +7,8 @@ export default function Typewriter({
   eraseSpeed = 45,   // ms por letra al borrar (solo con loop)
   delay = 500,       // espera antes de empezar
   pause = 2200,      // pausa con el texto completo (solo con loop)
-  loop = true,          // si se borra y vuelve a escribir
-  cursor = false,
+  loop = true,
+  cursor = true,
 }) {
   const [n, setN] = useState(0)
   const [fase, setFase] = useState('escribiendo')
@@ -39,10 +39,26 @@ export default function Typewriter({
   const visible = reducido ? text : text.slice(0, n)
 
   return (
-    <span className="tw" aria-label={text}>
+    <span
+      className="tw"
+      aria-label={text}
+      style={{ position: 'relative', display: 'inline-block' }}
+    >
       {/* Texto completo invisible: reserva el espacio para que nada se mueva */}
-      <span className="tw-reserva" aria-hidden="true">{text}</span>
-      <span className="tw-vivo" aria-hidden="true">
+      <span
+        className="tw-reserva"
+        aria-hidden="true"
+        style={{ visibility: 'hidden' }}
+      >
+        {text}
+      </span>
+
+      {/* Texto que se va escribiendo, encima de la reserva */}
+      <span
+        className="tw-vivo"
+        aria-hidden="true"
+        style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap' }}
+      >
         {visible}
         {cursor && <span className="tw-cursor" />}
       </span>

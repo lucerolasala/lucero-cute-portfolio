@@ -8,25 +8,104 @@
 /* Al abrir, baja un poco todo para que la hoja entre en pantalla */
 .mot--abierto .mot-escena { translate: 0 6vh; }
 
-/* ---------- Estrellas: ocupan todo el alrededor del sobre ---------- */
+/* ---------- Estrellas: explosión en cámara lenta ---------- */
 .mot-estrellas {
+  --ox: 50;                 /* origen de la explosión (el sello), en % del contenedor */
+  --oy: 61.7;
   position: absolute;
   inset: -48% 0 -14% 0;
+  z-index: 8;               /* por encima del sobre */
+  container-type: size;     /* habilita las unidades cqw / cqh */
   pointer-events: none;
 }
+
 .mot .mot-estrella {
   position: absolute;
-  z-index: 8;
   scale: 0;
-  pointer-events: none;
+  transition: scale 0.35s ease;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+  pointer-events: none;
 }
+.mot-estrella:nth-child(odd)  { --bal: 5.5s; }
+.mot-estrella:nth-child(even) { --bal: 4.5s; }
+
 .mot--abierto .mot-estrella {
   scale: 1;
   pointer-events: auto;
-  animation: pop-estrella 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d, 0.9s) backwards;
+  /* distancia que tiene que recorrer desde el sello hasta su lugar */
+  --dx: calc((var(--ox) - var(--l) - var(--w) / 2) * 1cqw);
+  --dy: calc((var(--oy) - var(--t)) * 1cqh - var(--w) / 2 * 1cqw);
+  animation:
+    explota 2.8s cubic-bezier(0.08, 0.85, 0.2, 1) var(--d, 0.55s) backwards,
+    balanceo var(--bal, 5s) ease-in-out calc(var(--d, 0.55s) + 2.8s) infinite;
 }
 .mot--abierto .mot-estrella:hover { scale: 1.3; }
+
+/* Sale disparada del sello, gira y frena despacio hasta su lugar */
+@keyframes explota {
+  from { translate: var(--dx) var(--dy); scale: 0; rotate: calc(var(--r) - 720deg); }
+  to   { translate: 0 0;                 scale: 1; rotate: var(--r); }
+}
+
+/* Chispas: salen en todas direcciones y se esfuman */
+.mot .mot-chispa {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  animation:
+    chispa-vuela 3.2s cubic-bezier(0.08, 0.85, 0.2, 1) calc(0.5s + var(--s, 0s)) both,
+    chispa-fade 3.2s linear calc(0.5s + var(--s, 0s)) both;
+}
+@keyframes chispa-vuela {
+  from { translate: 0 0; scale: 0; rotate: 0deg; }
+  to   { translate: calc(var(--cx) * 1cqw) calc(var(--cy) * 1cqw); scale: 1; rotate: calc(var(--r) + 360deg); }
+}
+@keyframes chispa-fade {
+  0%, 55% { opacity: 1; }
+  100%    { opacity: 0; }
+}
+
+/* Destello y onda desde el sello */
+.mot-destello,
+.mot-onda {
+  position: absolute;
+  left: calc(var(--ox) * 1%);
+  top: calc(var(--oy) * 1%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+.mot-destello {
+  width: 34cqw;
+  aspect-ratio: 1;
+  margin: -17cqw 0 0 -17cqw;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 65%);
+  animation: destello 2.4s ease-out 0.5s both;
+}
+.mot-onda {
+  width: 20cqw;
+  aspect-ratio: 1;
+  margin: -10cqw 0 0 -10cqw;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  animation: onda 2.6s cubic-bezier(0.1, 0.8, 0.2, 1) 0.5s both;
+}
+@keyframes destello {
+  from { opacity: 0; scale: 0.2; }
+  15%  { opacity: 1; }
+  to   { opacity: 0; scale: 1.8; }
+}
+@keyframes onda {
+  from { opacity: 1; scale: 0; }
+  to   { opacity: 0; scale: 3; }
+}
+
+/* El sello se sacude al romperse */
+.mot--abierto .sello { animation: sello-rompe 0.6s ease; }
+@keyframes sello-rompe {
+  0%   { scale: 1; }
+  35%  { scale: 1.4; }
+  100% { scale: 1; }
+}
 
 /* ---------- Sobre ---------- */
 .sobre {
@@ -57,6 +136,23 @@
   pointer-events: none;
 }
 
+/* Detalles de papel plegado (solapa inferior + líneas de luz) */
+.sobre-detalles {
+  inset: 0;
+  z-index: 3;             /* sobre el frente, debajo de la solapa y del sello */
+  border-radius: 12px;    /* respeta las esquinas del sobre */
+  overflow: hidden;
+  pointer-events: none;
+}
+.sobre-detalles svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.sobre-detalles .sd-corona {
+  filter: drop-shadow(0 -1px 2px rgba(0, 0, 0, 0.28));
+}
+
 /* Solapa que gira en 3D */
 .sobre-solapa {
   left: 0;
@@ -64,13 +160,18 @@
   width: 100%;
   height: 52%;
   z-index: 4;
-  background: linear-gradient(#6f655e, #5a524b);
-  clip-path: url(#clip-solapa);
   transform-origin: top center;
-  transform: rotateX(0deg);
-  /* Al cerrar: espera a que la hoja termine de bajar (0.7s) y recién ahí gira */
+  transform: perspective(1600px) rotateX(0deg);
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.35));
+  /* Al cerrar: espera a que la hoja termine de bajar y recién ahí gira */
   transition: transform 0.7s ease 0.7s, z-index 0s 0.7s;
   pointer-events: none;
+}
+.sobre-solapa svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 /* ---------- Hoja: grande, con borde, siempre adentro del sobre ---------- */
@@ -80,7 +181,7 @@
   top: 8%;
   bottom: 5%;              /* termina adentro: no se ve por debajo */
   z-index: 2;
-  background: #fadce6;
+  background: #ffedf3;
   border-radius: 6px;
   box-shadow:
     0 3px 10px rgba(0, 0, 0, 0.25),
@@ -127,11 +228,12 @@
 
 .mot-texto {
   position: absolute;
-  top: 27%;
+  top: 30%;
   left: 9%;
   right: 9%;
-  font-size: max(13px, 2.6cqw);
-  line-height: 1.5;
+  font-family: var(--f-carta);
+  font-size: max(18px, 3.6cqw);   /* antes: max(13px, 2.6cqw) */
+  line-height: 1.35;
   text-align: center;
   color: var(--gris);
 }
@@ -165,7 +267,7 @@
 
 /* ---------- Estado abierto ---------- */
 .mot--abierto .sobre-solapa {
-  transform: rotateX(180deg);
+  transform: perspective(1600px) rotateX(180deg);
   z-index: 1;
   transition: transform 0.7s ease, z-index 0s 0.3s;
 }
@@ -209,5 +311,67 @@
 @media (max-width: 700px) {
   .sobre { width: min(94%, 62vh); aspect-ratio: 1.2 / 1; }
   .mot-cabecera { width: 84%; }
-  .mot-texto { font-size: 13px; top: 30%; }
+  .mot-texto { font-size: 18px; top: 30%; }
+}
+
+/* ---------- El sobre tiembla mientras está cerrado ---------- */
+.mot:not(.mot--abierto) .sobre {
+  animation: sobre-tiembla 3.2s ease-in-out 0.4s infinite;
+}
+.mot:not(.mot--abierto) .sobre:hover { animation-play-state: paused; }
+
+@keyframes sobre-tiembla {
+  0%, 24%, 100% { rotate: 0deg;    translate: 0 0; }
+  3%  { rotate: -2.5deg; translate: -3px 0; }
+  6%  { rotate: 2.5deg;  translate: 3px 0; }
+  9%  { rotate: -2deg;   translate: -2px 0; }
+  12% { rotate: 2deg;    translate: 2px 0; }
+  16% { rotate: -1deg;   translate: -1px 0; }
+  20% { rotate: 1deg;    translate: 1px 0; }
+}
+
+/* ---------- Globitos de texto ---------- */
+.mot-globo {
+  position: absolute;
+  z-index: 9;
+  max-width: 46%;
+  padding: 6px 16px;
+  background: var(--crema);
+  color: var(--gris);
+  border: 2px solid var(--gris);
+  border-radius: 16px;
+  font-family: var(--f-texto);
+  font-size: clamp(14px, 2.1vw, 22px);
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  rotate: var(--r, 0deg);
+  pointer-events: none;
+  animation: globo 3.2s ease both;
+}
+
+/* colita del globo */
+.mot-globo::after {
+  content: '';
+  position: absolute;
+  left: 28px;
+  bottom: -9px;
+  width: 14px;
+  height: 14px;
+  background: var(--crema);
+  border-right: 2px solid var(--gris);
+  border-bottom: 2px solid var(--gris);
+  rotate: 45deg;
+}
+
+/* aparece con pop, se queda y se esfuma */
+@keyframes globo {
+  0%   { opacity: 0; scale: 0.4; translate: 0 10px; }
+  8%   { opacity: 1; scale: 1.12; translate: 0 0; }
+  14%  { scale: 1; }
+  86%  { opacity: 1; scale: 1; }
+  100% { opacity: 0; scale: 0.85; translate: 0 -8px; }
+}
+
+@media (max-width: 700px) {
+  .mot-globo { max-width: 60%; }
 }

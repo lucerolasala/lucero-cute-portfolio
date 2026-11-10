@@ -66,7 +66,6 @@ export default function SobreMi() {
           <a href={`mailto:${c.email}`}><MailIcon /> {c.email}</a>
           <a href={c.github} target="_blank" rel="noreferrer"><GithubIcon /> {c.githubLabel}</a>
           <a href={c.linkedin} target="_blank" rel="noreferrer"><LinkedinIcon /> {c.linkedinLabel}</a>
-          <span><PinIcon /> {profile.location}</span>
           <a className="sm-cv" href="/cv-lucero.pdf" download="CV-Lucero-Lasala.pdf">
             <DownloadIcon /> Descargar CV
           </a>

@@ -12,7 +12,7 @@ export const profile = {
     email: 'lucerolasala@gmail.com',
     github: 'https://github.com/lucerolasala',
     githubLabel: 'github.com/lucerolasala',
-    linkedin: 'https://www.linkedin.com/in/lucerolasala',
+    linkedin: 'https://www.linkedin.com/in/lucero-lasala-753330391',
     linkedinLabel: 'linkedin.com/in/lucerolasala',
   },
     motivation: {

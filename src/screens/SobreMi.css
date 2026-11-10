@@ -336,7 +336,13 @@
     padding: 30px 18px 24px;
   }
   .sm-foto { margin: -56px auto 10px; width: 190px; } .sm-titulo h1 { font-size: 38px; padding: 4px 26px 12px; }
-  .sm-titulo .sm-nombre { font-size: 19px; }
+  .sm-titulo h1 { font-size: 38px; padding: 4px 26px 22px; }
+  .sm-titulo .sm-nombre {
+    font-size: 19px;
+    width: 54%;
+    margin: -12px auto 0;
+  }
+  .sm-titulo { margin-bottom: 40px; }
   .sm-e3, .sm-e4 { display: none; }
   .sm-e1 { left: -8%; }
   .sm-e2 { right: -12%; }

@@ -74,6 +74,19 @@
 .nav-pista b { display: inline-block; margin-left: 4px; }
 .nav-pista:hover { background: var(--rosa); }
 
+/* ---------- Celular ---------- */
+@media (max-width: 700px) {
+  .nav-puntos {
+    right: 4px;
+    gap: 9px;
+    padding: 8px 4px;
+    background: rgba(255, 250, 240, 0.85);
+  }
+  .nav-punto { width: 11px; height: 11px; border-width: 1.5px; }
+  .nav-punto span { display: none; }
+  .nav-pista { font-size: 17px; }
+}
+
 @keyframes nav-pista-entra {
   from { opacity: 0; translate: 0 20px; }
 }

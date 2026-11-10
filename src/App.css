@@ -48,3 +48,9 @@
   min-height: 0;
   overflow: hidden;
 }
+
+/* Celular: franja libre a los costados para que la barra no tape el contenido */
+@media (max-width: 700px) {
+  .pantalla { padding-left: 26px; padding-right: 26px; }
+  .pantalla--portada { padding-left: 0; padding-right: 0; }
+}
